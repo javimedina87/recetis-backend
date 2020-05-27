@@ -1,8 +1,14 @@
+const bodyParser = require('body-parser');
+const cors = require('cors')
 const express = require('express');
 const mongoose = require('mongoose');
-const bodyParser = require('body-parser');
 
 const app = express();
+const corsOptions = {
+	origin: 'http://localhost:3000'
+}
+
+app.use(cors());
 
 app.use(bodyParser.json());
 
@@ -34,25 +40,72 @@ app.listen(process.env.PORT || 4200, function () {
 	mongoose.connection.on('error', () => console.log('Error conecting with database...'));
 });
 
+// TODO check CORS
+
 /* API Routes */
-app.get('/api/getIdeas', function (req, res) {
-	res.send('getIdeas');
+app.get('/api/ideas', async (req, res) => {
+	const ideas = await IdeaModel.find();
+
+	res.send(ideas); // TODO return only name
 });
 
-app.post('/api/addIdea/:ideaId', function(req, res) {
-	const idea = new IdeaModel({ name: 'idea api bbdd' });
+app.get('/api/ideas/:id', async (req, res) => {
+	try {
+		const idea = await IdeaModel.findOne({ _id: req.params.id }) // TODO check this _id
 
-	console.log('req.params.ideaId', req.params.ideaId);
-	// console.log('res', res);
-
-
-	idea.save(function(err) {
-		if (err) throw err;
-
-		console.log('Idea created ');
-		res.send('idea created...');
-	})
+		res.send(idea)
+	} catch {
+		res.status(404)
+		res.send({ error: "Idea doesn't exist!" })
+	}
 });
+
+app.post('/api/ideas', async (req, res) => {
+	console.log('req.body.name: ', req.body.name);
+
+	const idea = new IdeaModel({
+		name: req.body.name
+	});
+
+	await idea.save();
+
+	res.send(idea); // TODO test this response
+});
+
+
+app.patch("api/ideas/:id", async (req, res) => {
+	try {
+		const idea = await IdeaModel.findOne({ _id: req.params.id }) // TODO check this _id
+
+		// if (req.body.title) {
+		// 	idea.title = req.body.title
+		// }
+		//
+		// if (req.body.content) {
+		// 	idea.content = req.body.content
+		// }
+
+		await idea.save()
+
+		res.send(idea)
+	} catch {
+		res.status(404)
+		res.send({ error: "Idea doesn't exist!" })
+	}
+})
+
+app.delete("/ideas/:id", async (req, res) => {
+	try {
+		await Idea.deleteOne({ _id: req.params.id })
+
+		res.status(204).send()
+	} catch {
+		res.status(404)
+		res.send({ error: "Idea doesn't exist!" })
+	}
+})
+
+
 
 
 
@@ -60,14 +113,6 @@ app.get('*', function (req, res) {
 	res.send('Not found');
 });
 
-// app.post('/api/contacts', function(req, res) {
-// });
-//
-// app.put('/api/contacts/:id', function(req, res) {
-// });
-//
-// app.delete('/api/contacts/:id', function(req, res) {
-// });
 
 // Generic error handler used by all endpoints.
 // function handleError(res, reason, message, code) {
