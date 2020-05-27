@@ -12,23 +12,19 @@ app.use(cors());
 
 app.use(bodyParser.json());
 
-
-// mongoose.connect('mongodb://shavin:test1234@ds149676.mlab.com:49676/heroku_78srf016',
-// 	{
-// 		useNewUrlParser: true
-// 	}
-// );
-
-// Schema
+// Schemas
 const ideaSchema = new mongoose.Schema({
 	name: String
 });
+const recipeSchema = new mongoose.Schema({
+	name: String,
+	ingredients: String,
+	link: String
+});
 
-// Model
+// Models
 const IdeaModel = mongoose.model('Idea', ideaSchema);
-// const idea = new IdeaModel({ name: '...idea desde base de datos...' });
-
-
+const RecipeModel = mongoose.model('Recipe', recipeSchema);
 
 app.listen(process.env.PORT || 4200, function () {
 	console.log('Server running !');
@@ -42,69 +38,70 @@ app.listen(process.env.PORT || 4200, function () {
 
 // TODO check CORS
 
+
 /* API Routes */
+
+// Ideas
 app.get('/api/ideas', async (req, res) => {
 	const ideas = await IdeaModel.find();
 
 	res.send(ideas); // TODO return only name
 });
 
-app.get('/api/ideas/:id', async (req, res) => {
-	try {
-		const idea = await IdeaModel.findOne({ _id: req.params.id }) // TODO check this _id
-
-		res.send(idea)
-	} catch {
-		res.status(404)
-		res.send({ error: "Idea doesn't exist!" })
-	}
-});
+// app.get('/api/ideas/:id', async (req, res) => {
+// 	try {
+// 		const idea = await IdeaModel.findOne({ _id: req.params.id }) // TODO check this _id
+//
+// 		res.send(idea)
+// 	} catch {
+// 		res.status(404)
+// 		res.send({ error: "Idea doesn't exist!" })
+// 	}
+// });
 
 app.post('/api/ideas', async (req, res) => {
-	console.log('req.body.name: ', req.body.name);
+	try {
+		const idea = new IdeaModel({
+			name: req.body.name
+		});
 
-	const idea = new IdeaModel({
-		name: req.body.name
-	});
+		await idea.save();
 
-	await idea.save();
+		const response = await IdeaModel.find();
 
-	res.send(idea); // TODO test this response
+		res.send(response);
+	} catch {
+		res.status(404)
+		res.send({ error: "Idea doesn't saved!" })
+	}
 });
 
+// Recipes
+app.get('/api/recipes', async (req, res) => {
+	const recipes = await RecipeModel.find();
 
-app.patch("api/ideas/:id", async (req, res) => {
+	res.send(recipes);
+});
+
+app.post('/api/recipes', async (req, res) => {
 	try {
-		const idea = await IdeaModel.findOne({ _id: req.params.id }) // TODO check this _id
+		const recipe = new RecipeModel({
+			name: req.body.name,
+			ingredients: req.body.ingredients,
+			link: req.body.link
+		});
 
-		// if (req.body.title) {
-		// 	idea.title = req.body.title
-		// }
-		//
-		// if (req.body.content) {
-		// 	idea.content = req.body.content
-		// }
+		await recipe.save();
 
-		await idea.save()
+		const response = await RecipeModel.find();
+		console.log('response recipe', response);
 
-		res.send(idea)
+		res.send(response);
 	} catch {
 		res.status(404)
-		res.send({ error: "Idea doesn't exist!" })
+		res.send({ error: "Recipe doesn't saved!" })
 	}
-})
-
-app.delete("/ideas/:id", async (req, res) => {
-	try {
-		await Idea.deleteOne({ _id: req.params.id })
-
-		res.status(204).send()
-	} catch {
-		res.status(404)
-		res.send({ error: "Idea doesn't exist!" })
-	}
-})
-
+});
 
 
 
@@ -112,6 +109,40 @@ app.delete("/ideas/:id", async (req, res) => {
 app.get('*', function (req, res) {
 	res.send('Not found');
 });
+
+
+// app.patch("api/ideas/:id", async (req, res) => {
+// 	try {
+// 		const idea = await IdeaModel.findOne({ _id: req.params.id }) // TODO check this _id
+//
+// 		// if (req.body.title) {
+// 		// 	idea.title = req.body.title
+// 		// }
+// 		//
+// 		// if (req.body.content) {
+// 		// 	idea.content = req.body.content
+// 		// }
+//
+// 		await idea.save()
+//
+// 		res.send(idea)
+// 	} catch {
+// 		res.status(404)
+// 		res.send({ error: "Idea doesn't exist!" })
+// 	}
+// })
+//
+// app.delete("/ideas/:id", async (req, res) => {
+// 	try {
+// 		await Idea.deleteOne({ _id: req.params.id })
+//
+// 		res.status(204).send()
+// 	} catch {
+// 		res.status(404)
+// 		res.send({ error: "Idea doesn't exist!" })
+// 	}
+// })
+
 
 
 // Generic error handler used by all endpoints.
