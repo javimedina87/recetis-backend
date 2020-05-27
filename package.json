@@ -1,0 +1,24 @@
+{
+  "bugs": {
+    "url": "https://github.com/jmlmedinalopez/recetis-backend/issues"
+  },
+  "dependencies": {
+    "express": "^4.17.1"
+  },
+  "description": "Backend Recetis",
+  "engines": {
+    "node": "10.15.0"
+  },
+  "homepage": "https://github.com/jmlmedinalopez/recetis-backend#readme",
+  "license": "ISC",
+  "main": "index.js",
+  "name": "recetis-backend",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jmlmedinalopez/recetis-backend.git"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "version": "1.0.0"
+}
