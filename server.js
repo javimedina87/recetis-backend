@@ -78,9 +78,10 @@ app.post('/api/ideas', async (req, res) => {
 
 // Recipes
 app.get('/api/recipes', async (req, res) => {
-	const recipes = await RecipeModel.find();
+	await RecipeModel.find().sort({_id: 'desc'}).exec(function(err, resp) {
+		res.send(resp);
+	});
 
-	res.send(recipes);
 });
 
 app.post('/api/recipes', async (req, res) => {
@@ -93,10 +94,9 @@ app.post('/api/recipes', async (req, res) => {
 
 		await recipe.save();
 
-		const response = await RecipeModel.find();
-		console.log('response recipe', response);
-
-		res.send(response);
+		await RecipeModel.find().sort({_id: 'desc'}).exec(function(err, resp) {
+			res.send(resp);
+		});
 	} catch {
 		res.status(404)
 		res.send({ error: "Recipe doesn't saved!" })
