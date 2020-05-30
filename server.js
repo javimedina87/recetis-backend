@@ -12,19 +12,9 @@ app.use(cors());
 
 app.use(bodyParser.json());
 
-// Schemas
-const ideaSchema = new mongoose.Schema({
-	name: String
-});
-const recipeSchema = new mongoose.Schema({
-	name: String,
-	ingredients: String,
-	link: String
-});
-
 // Models
-const IdeaModel = mongoose.model('Idea', ideaSchema);
-const RecipeModel = mongoose.model('Recipe', recipeSchema);
+const TodoModel = require('./models/todo');
+const RecipeModel = require('./models/recipe');
 
 app.listen(process.env.PORT || 4200, function () {
 	console.log('Server running !');
@@ -41,38 +31,38 @@ app.listen(process.env.PORT || 4200, function () {
 
 /* API Routes */
 
-// Ideas
-app.get('/api/ideas', async (req, res) => {
-	const ideas = await IdeaModel.find();
+// Todos
+app.get('/api/todos', async (req, res) => {
+	const todos = await TodoModel.find({}, 'name'); // only return 'name'
 
-	res.send(ideas); // TODO return only name
+	res.send(todos); // TODO return only name
 });
 
-// app.get('/api/ideas/:id', async (req, res) => {
+// app.get('/api/todos/:id', async (req, res) => {
 // 	try {
-// 		const idea = await IdeaModel.findOne({ _id: req.params.id }) // TODO check this _id
+// 		const todo = await TodoModel.findOne({ _id: req.params.id }) // TODO check this _id
 //
-// 		res.send(idea)
+// 		res.send(todo)
 // 	} catch {
 // 		res.status(404)
-// 		res.send({ error: "Idea doesn't exist!" })
+// 		res.send({ error: "Todo doesn't exist!" })
 // 	}
 // });
 
-app.post('/api/ideas', async (req, res) => {
+app.post('/api/todos', async (req, res) => {
 	try {
-		const idea = new IdeaModel({
+		const todo = new TodoModel({
 			name: req.body.name
 		});
 
-		await idea.save();
+		await todo.save();
 
-		const response = await IdeaModel.find();
+		const response = await TodoModel.find({}, 'name');
 
 		res.send(response);
 	} catch {
 		res.status(404)
-		res.send({ error: "Idea doesn't saved!" })
+		res.send({ error: "Todo doesn't saved!" })
 	}
 });
 
@@ -111,35 +101,35 @@ app.get('*', function (req, res) {
 });
 
 
-// app.patch("api/ideas/:id", async (req, res) => {
+// app.patch("api/todos/:id", async (req, res) => {
 // 	try {
-// 		const idea = await IdeaModel.findOne({ _id: req.params.id }) // TODO check this _id
+// 		const todo = await TodoModel.findOne({ _id: req.params.id }) // TODO check this _id
 //
 // 		// if (req.body.title) {
-// 		// 	idea.title = req.body.title
+// 		// 	todo.title = req.body.title
 // 		// }
 // 		//
 // 		// if (req.body.content) {
-// 		// 	idea.content = req.body.content
+// 		// 	todo.content = req.body.content
 // 		// }
 //
-// 		await idea.save()
+// 		await todo.save()
 //
-// 		res.send(idea)
+// 		res.send(todo)
 // 	} catch {
 // 		res.status(404)
-// 		res.send({ error: "Idea doesn't exist!" })
+// 		res.send({ error: "Todo doesn't exist!" })
 // 	}
 // })
 //
-// app.delete("/ideas/:id", async (req, res) => {
+// app.delete("/todos/:id", async (req, res) => {
 // 	try {
-// 		await Idea.deleteOne({ _id: req.params.id })
+// 		await Todo.deleteOne({ _id: req.params.id })
 //
 // 		res.status(204).send()
 // 	} catch {
 // 		res.status(404)
-// 		res.send({ error: "Idea doesn't exist!" })
+// 		res.send({ error: "Todo doesn't exist!" })
 // 	}
 // })
 
