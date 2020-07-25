@@ -2,11 +2,9 @@ const bodyParser = require('body-parser');
 const cors = require('cors')
 const express = require('express');
 const mongoose = require('mongoose');
-
 const app = express();
-const corsOptions = {
-	origin: 'http://localhost:3000'
-}
+const serverPort = process.env.PORT || 4200;
+
 
 app.use(cors());
 
@@ -16,8 +14,8 @@ app.use(bodyParser.json());
 const TodoModel = require('./models/todo');
 const RecipeModel = require('./models/recipe');
 
-app.listen(process.env.PORT || 4200, function () {
-	console.log('Server running !');
+app.listen(serverPort, function () {
+	console.log('Server running on port -->', serverPort);
 
 	mongoose.connect('mongodb://shavin:test1234@ds149676.mlab.com:49676/heroku_78srf016', (err) => {
 		if (err) throw err;
@@ -27,7 +25,6 @@ app.listen(process.env.PORT || 4200, function () {
 });
 
 // TODO check CORS
-
 
 /* API Routes */
 
