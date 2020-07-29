@@ -85,13 +85,21 @@ app.post('/api/recipes', async (req, res) => {
 			res.send(resp);
 		});
 	} catch {
-		res.status(404)
-		res.send({ error: "Recipe doesn't saved!" })
+		res.status(404);
+		res.send({ error: "Recipe doesn't saved!" });
 	}
 });
 
-
-
+app.delete('/api/recipes', async (req, res) => {
+	try {
+		await RecipeModel.find({ _id: req.body._id }).remove().exec(function(err, resp) {
+			res.send(resp);
+		});
+	} catch {
+		res.status(404);
+		res.send({ error: "Recipe doesn't deleted!" });
+	}
+})
 
 app.get('*', function (req, res) {
 	res.send('Not found');
@@ -119,16 +127,6 @@ app.get('*', function (req, res) {
 // 	}
 // })
 //
-// app.delete("/todos/:id", async (req, res) => {
-// 	try {
-// 		await Todo.deleteOne({ _id: req.params.id })
-//
-// 		res.status(204).send()
-// 	} catch {
-// 		res.status(404)
-// 		res.send({ error: "Todo doesn't exist!" })
-// 	}
-// })
 
 
 

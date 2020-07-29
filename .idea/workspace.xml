@@ -23,6 +23,7 @@
     <option name="showLibraryContents" value="true" />
   </component>
   <component name="PropertiesComponent">
+    <property name="TERMINAL_CUSTOM_COMMANDS_GOT_IT" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
@@ -44,7 +45,10 @@
       <workItem from="1590568341324" duration="11096000" />
       <workItem from="1590874638870" duration="2983000" />
       <workItem from="1595710740002" duration="33000" />
-      <workItem from="1595710814427" duration="887000" />
+      <workItem from="1595710814427" duration="1603000" />
+      <workItem from="1595799679248" duration="368000" />
+      <workItem from="1595943296590" duration="1216000" />
+      <workItem from="1595964393699" duration="3545000" />
     </task>
     <servers />
   </component>
